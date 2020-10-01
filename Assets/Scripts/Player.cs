@@ -27,7 +27,6 @@ public class Player : MonoBehaviour
     {
         Vector3 direction = Vector3.forward * variableJoystick.Vertical + Vector3.right * variableJoystick.Horizontal;
         rb.AddForce(direction * speed * Time.fixedDeltaTime, ForceMode.VelocityChange);
-        Debug.Log(rb.velocity.magnitude);
         animator.SetFloat("speed", rb.velocity.magnitude);
         if(direction != Vector3.zero)
         {
@@ -48,6 +47,6 @@ public class Player : MonoBehaviour
         upperLeftArm.transform.localRotation = Quaternion.Euler(new Vector3(10f, 7f, 50f));
         upperRightArm.transform.localRotation = Quaternion.Euler(new Vector3(-2f, -7f, 40f));
         leftWrist.transform.localRotation = Quaternion.Euler(new Vector3(0f, 0f, 55f));
-        rightWrist.transform.localRotation = Quaternion.Euler(new Vector3(-90f, -90f, 85f));
+        rightWrist.transform.localRotation = Quaternion.Euler(new Vector3(-90f, -90f, 85f ));
     }
 }
