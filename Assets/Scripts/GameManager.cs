@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     public int EnemyCountPerSpawn { get; private set; }
     public int MaximumEnemySpawnedSimultenous { get; private set; }
     public int EnemyHealth { get; private set; }
+    public float PlayerAttackRange { get; private set; }
+    public float EnemyAttackRange { get; private set; }
 
     [SerializeField] GameObject EnemySpawner=default;
     [SerializeField] public GameObject User;
@@ -48,6 +50,8 @@ public class GameManager : MonoBehaviour
         GameLevel = 1;
         EnemyCountPerSpawn = 5;
         MaximumEnemySpawnedSimultenous = 11;
+        EnemyAttackRange = 12f;
+        PlayerAttackRange = 10f;
         DontDestroyOnLoad(this.gameObject);
         StartLevel();
     }
