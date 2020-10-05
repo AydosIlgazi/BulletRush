@@ -10,7 +10,12 @@ public class Enemy : MonoBehaviour
     public GameObject user;
     Vector3 direction;
     public GameObject gameStatus;
+    GameManager instance;
     // Start is called before the first frame update
+    void Awake()
+    {
+        instance = GameManager.Instance;
+    }
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
@@ -20,8 +25,8 @@ public class Enemy : MonoBehaviour
     void FixedUpdate()
     {
         //if player is in enemy attack range, follow player
-        if ((transform.position - GameManager.Instance.User.transform.position).magnitude<GameManager.Instance.EnemyAttackRange){
-            direction = (GameManager.Instance.User.transform.position - transform.position).normalized;
+        if ((transform.position - instance.User.transform.position).magnitude< instance.EnemyAttackRange){
+            direction = (instance.User.transform.position - transform.position).normalized;
             rb.MovePosition(transform.position + direction * movementSpeed * Time.fixedDeltaTime);
         }
         //Move towards center of the map

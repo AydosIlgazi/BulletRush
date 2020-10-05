@@ -23,13 +23,18 @@ public class Player : MonoBehaviour
     public GameObject leftEnemySearcher;
     public GameObject rightEnemySearcher;
     public GameObject enemyTemp;
+    public GameObject leftGun;
+    public GameObject rightGun;
     public List<Enemy> enemyList;
-    private float maxY=75f;
+    GameManager gameManager;
+    BulletPool pool;
+    private float maxY=65f;
     private float minY=10f;
-    private float maxZ=45f;   //In z Rotation Openin arm reverse transform
+    private float maxZ=40f;   //In z Rotation Openin arm reverse transform
     private float minZ=-20f;
     private float armClosingOffset = 10f;
     private float yOffset;
+    private bool onFire = false;
 
     void Awake()
     {
@@ -39,6 +44,8 @@ public class Player : MonoBehaviour
     void Start()
     {
         animator = gameObject.GetComponent<Animator>();
+        gameManager = GameManager.Instance;
+        pool = BulletPool.instance;
     }
 
     void FixedUpdate()
@@ -65,8 +72,10 @@ public class Player : MonoBehaviour
         Enemy rightClosestEnemy = GetClosestEnemy(enemyList, rightEnemySearcher);
         float distanceLeft = (leftClosestEnemy.transform.position - leftWrist.transform.position).magnitude;
         float distanceRight = (rightClosestEnemy.transform.position - rightWrist.transform.position).magnitude;
-        if(distanceLeft<= GameManager.Instance.PlayerAttackRange|| distanceRight <= GameManager.Instance.PlayerAttackRange)
+        if(distanceLeft<= gameManager.PlayerAttackRange|| distanceRight <= gameManager.PlayerAttackRange)
         {
+            leftArm.transform.localRotation = Quaternion.Euler(new Vector3(-165f, 90f, 40f));
+            rightArm.transform.localRotation = Quaternion.Euler(new Vector3(15f, 90f, 40f));
             //Rotate towards to enemy
 
             Vector3 leftEnemyDirection = (leftClosestEnemy.transform.position - transform.position).normalized; //Enemy to Kyle
@@ -81,7 +90,6 @@ public class Player : MonoBehaviour
 
             if(isLeftTargetable && isRightTargetable) // both arms can shoot different enemies 
             {
-                Debug.Log("Both Targerable");
                 float leftArmZRotation = YZRotationMapper(playerYLeftTransform);
                 float rightArmZRotation = YZRotationMapper(playerYRightTransform);
                 leftArm.transform.localRotation = Quaternion.Euler(new Vector3(-165f, 90f, leftArmZRotation));
@@ -98,12 +106,17 @@ public class Player : MonoBehaviour
                 Vector3 enemyDirection = (closestEnemy.transform.position - transform.position).normalized;
                 Quaternion lookRotationEnemy = Quaternion.LookRotation(enemyDirection, Vector3.up);
                 transform.rotation = Quaternion.Euler(new Vector3(0f, Quaternion.RotateTowards(lookRotationEnemy, transform.rotation, rotationSpeed * Time.deltaTime).eulerAngles.y));
-                leftArm.transform.localRotation = Quaternion.Euler(new Vector3(-165f, 90f, 45f));
-                rightArm.transform.localRotation = Quaternion.Euler(new Vector3(15f, 90f, 45f));
+
+            }
+            if(onFire == false)
+            {
+                StartCoroutine(FireRoutine());
+
             }
         }
         else
         {
+            onFire = false;
             //Rotate with joystick
             Vector3 directionJoystick = Vector3.forward * variableJoystick.Vertical + Vector3.right * variableJoystick.Horizontal;
             if (directionJoystick != Vector3.zero)
@@ -118,7 +131,8 @@ public class Player : MonoBehaviour
         }
 
 
-
+        //Debug.Log("Kyle Rotation  /  "+ transform.rotation);
+        //Debug.Log("Gun Rotation  /  "+ leftGun.transform.rotation.eulerAngles.y);
 
         float stepEnemy = rotationSpeed * Time.deltaTime;
         Vector3 direction = (enemyTemp.transform.position - transform.position).normalized;
@@ -153,7 +167,7 @@ public class Player : MonoBehaviour
         if (yTransform > 180 && isCloserDegreeExist)
             yTransform = yTransform - 360;
         yOffset = Math.Abs (yTransform - playerYAbs); //How much rotation needed to hit the enemy
-        Debug.Log(targetable + "  /  " +yTransform+"  /  "+ transform.rotation.eulerAngles.y + "  /  " + yOffset);
+        //Debug.Log(targetable + "  /  " +yTransform+"  /  "+ transform.rotation.eulerAngles.y + "  /  " + yOffset);
         if(targetable == Targetable.LeftTargetable)
         {
             if (yOffset < 65 &&  yTransform<= playerYAbs ) //robot's arm can rotate maximum 65 degrees check if it can hit that object
@@ -196,6 +210,18 @@ public class Player : MonoBehaviour
         float correspondingZ = yDifference + minZ; //Map to Z axis
         correspondingZ = Mathf.Clamp(correspondingZ, minZ, maxZ);  // We dont want to arms broke :) 
         return correspondingZ;
+    }
+
+    private IEnumerator FireRoutine()
+    {
+        onFire = true;
+        while (onFire)
+        {
+            yield return new WaitForSeconds(0.1f);
+            GameObject leftBullet = pool.Fire("bullet",leftGun.transform.position, leftGun.transform.rotation);
+            GameObject rightBullet = pool.Fire("bullet", rightGun.transform.position, rightGun.transform.rotation);
+            yield return new WaitForSeconds(1f);
+        }
     }
 
 
