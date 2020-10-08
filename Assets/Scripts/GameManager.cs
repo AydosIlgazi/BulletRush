@@ -11,12 +11,17 @@ public class GameManager : MonoBehaviour
 
     public int EnemyCountPerSpawn { get; private set; }
     public int MaximumEnemySpawnedSimultenous { get; private set; }
-    public int EnemyHealth { get; private set; }
     public float PlayerAttackRange { get; private set; }
+    public int BulletDamage { get; private set; }
+    public float BulletSpeed { get; private set; }
+    public float BulletPenetration { get; private set; }
+    public float FireRate { get; private set; }
     public float EnemyAttackRange { get; private set; }
+    public float EnemySpeed { get; private set; }
+    public int EnemyHealth { get; private set; }
 
     [SerializeField] GameObject EnemySpawner=default;
-    [SerializeField] public GameObject User;
+    [SerializeField] public GameObject Player;
 
     public static GameManager Instance
     {
@@ -46,10 +51,14 @@ public class GameManager : MonoBehaviour
 
         _instance = this;
         SpawnCountPerWave = 4;
-        EnemyHealth = 20;
+        EnemyHealth = 10;
+        EnemySpeed = 0.5f;
+        BulletDamage = 5;
+        BulletSpeed = 4f;
+        FireRate = 1f;
         GameLevel = 1;
-        EnemyCountPerSpawn = 5;
-        MaximumEnemySpawnedSimultenous = 11;
+        EnemyCountPerSpawn = 16;
+        MaximumEnemySpawnedSimultenous = 9;
         EnemyAttackRange = 12f;
         PlayerAttackRange = 10f;
         DontDestroyOnLoad(this.gameObject);

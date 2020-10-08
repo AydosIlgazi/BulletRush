@@ -10,7 +10,7 @@ public class EnemySpawner : MonoBehaviour
     private Vector3 offSetVerticalUp;
     private Vector3 offSetVerticalDown;
     private Vector3 yCoordFixer;
-    private float offSet = 0.25f;
+    private float offSet = 0.5f;
     [SerializeField] GameObject Enemy=default;
     public SpawnerType spawnerType;
     // Start is called before the first frame update
@@ -41,7 +41,7 @@ public class EnemySpawner : MonoBehaviour
         for (int i = 0; i < 1; i++)
         {
             var enemy = Instantiate(Enemy, transform);
-            GameManager.Instance.User.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+            GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
             int k = 1;
             Vector3 topScale = transform.position + yCoordFixer; ;
             Vector3 rightScale = transform.position+yCoordFixer;
@@ -60,30 +60,30 @@ public class EnemySpawner : MonoBehaviour
                 if (spawnerType == SpawnerType.topSpawner)
                 {
                     enemy = Instantiate(Enemy, topScale + (offSetHorizontalRight * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.User.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                     enemy = Instantiate(Enemy, topScale + (offSetHorizontalLeft * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.User.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                 }
                 else if (spawnerType == SpawnerType.rightSpawner)
                 {
                     enemy = Instantiate(Enemy, rightScale + (offSetVerticalUp * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.User.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                     enemy = Instantiate(Enemy, rightScale + (offSetVerticalDown * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.User.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                 }
                 else if (spawnerType == SpawnerType.leftSpawner)
                 {
                     enemy = Instantiate(Enemy, leftScale + (offSetVerticalUp * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.User.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                     enemy = Instantiate(Enemy, leftScale + (offSetVerticalDown * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.User.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                 }
                 else
                 {
                     enemy = Instantiate(Enemy, bottomScale + (offSetVerticalUp * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.User.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                     enemy = Instantiate(Enemy, bottomScale + (offSetVerticalDown * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.User.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                 }
                 k++;
             }

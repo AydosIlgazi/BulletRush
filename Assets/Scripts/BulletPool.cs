@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PoolType { regulerBullet}
 public class BulletPool : MonoBehaviour
 {
     [System.Serializable]
     public class Pool{
-        public string tag;
+        public PoolType tag;
         public GameObject prefab;
         public int size;
     }
@@ -14,7 +15,7 @@ public class BulletPool : MonoBehaviour
     public static BulletPool instance;
 
     public List<Pool> pools;
-    private Dictionary<string,Queue<GameObject>> poolDictionary;
+    private Dictionary<PoolType,Queue<GameObject>> poolDictionary;
 
     void Awake()
     {
@@ -24,7 +25,7 @@ public class BulletPool : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        poolDictionary = new Dictionary<string, Queue<GameObject>>();
+        poolDictionary = new Dictionary<PoolType, Queue<GameObject>>();
         foreach(Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
@@ -32,6 +33,7 @@ public class BulletPool : MonoBehaviour
             for(int i = 0; i < pool.size; i++)
             {
                 GameObject obj = Instantiate(pool.prefab);
+                obj.GetComponent<Bullet>().buleltType = pool.tag;
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
             }
@@ -40,7 +42,7 @@ public class BulletPool : MonoBehaviour
         }
     }
 
-    public GameObject Fire(string tag,Vector3 position,Quaternion rotation)
+    public GameObject Fire(PoolType tag,Vector3 position,Quaternion rotation)
     {
         Queue<GameObject> objPool = poolDictionary[tag];
         GameObject obj = objPool.Dequeue();
@@ -50,7 +52,7 @@ public class BulletPool : MonoBehaviour
         return obj;
     }
 
-    public void BackToPool(string tag,GameObject obj)
+    public void BackToPool(PoolType tag,GameObject obj)
     {
         obj.SetActive(false);
         Queue<GameObject> objPool = poolDictionary[tag];

@@ -22,23 +22,26 @@ public class Player : MonoBehaviour
     public GameObject rightWrist;
     public GameObject leftEnemySearcher;
     public GameObject rightEnemySearcher;
-    public GameObject enemyTemp;
     public GameObject leftGun;
     public GameObject rightGun;
+    public GameObject ForceShield;
     public List<Enemy> enemyList;
     GameManager gameManager;
     BulletPool pool;
-    private float maxY=65f;
+    private float maxY=60f;
     private float minY=10f;
     private float maxZ=40f;   //In z Rotation Openin arm reverse transform
     private float minZ=-20f;
     private float armClosingOffset = 10f;
     private float yOffset;
+    private float fireTimer = 0f;
     private bool onFire = false;
+    private PoolType currentBulletType;
 
     void Awake()
     {
         enemyList = new List<Enemy>();
+        currentBulletType = PoolType.regulerBullet;
     }
 
     void Start()
@@ -46,6 +49,14 @@ public class Player : MonoBehaviour
         animator = gameObject.GetComponent<Animator>();
         gameManager = GameManager.Instance;
         pool = BulletPool.instance;
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+            TriggerShield();
+        }
     }
 
     void FixedUpdate()
@@ -72,7 +83,18 @@ public class Player : MonoBehaviour
         Enemy rightClosestEnemy = GetClosestEnemy(enemyList, rightEnemySearcher);
         float distanceLeft = (leftClosestEnemy.transform.position - leftWrist.transform.position).magnitude;
         float distanceRight = (rightClosestEnemy.transform.position - rightWrist.transform.position).magnitude;
-        if(distanceLeft<= gameManager.PlayerAttackRange|| distanceRight <= gameManager.PlayerAttackRange)
+
+        leftForeArm.transform.localRotation = Quaternion.Euler(new Vector3(0f, 15f, -55f));
+        rightForeArm.transform.localRotation = Quaternion.Euler(new Vector3(110f, -35f, -50f));
+        upperLeftArm.transform.localRotation = Quaternion.Euler(new Vector3(10f, 7f, 50f));
+        upperRightArm.transform.localRotation = Quaternion.Euler(new Vector3(-2f, -7f, 40f));
+        leftWrist.transform.localRotation = Quaternion.Euler(new Vector3(0f, 0f, 55f));
+        rightWrist.transform.localRotation = Quaternion.Euler(new Vector3(-90f, -90f, 85f));
+
+
+        if (distanceLeft <= gameManager.PlayerAttackRange || distanceRight <= gameManager.PlayerAttackRange) { 
+}
+            if (distanceLeft<= gameManager.PlayerAttackRange|| distanceRight <= gameManager.PlayerAttackRange)
         {
             leftArm.transform.localRotation = Quaternion.Euler(new Vector3(-165f, 90f, 40f));
             rightArm.transform.localRotation = Quaternion.Euler(new Vector3(15f, 90f, 40f));
@@ -90,8 +112,10 @@ public class Player : MonoBehaviour
 
             if(isLeftTargetable && isRightTargetable) // both arms can shoot different enemies 
             {
+
                 float leftArmZRotation = YZRotationMapper(playerYLeftTransform);
                 float rightArmZRotation = YZRotationMapper(playerYRightTransform);
+
                 leftArm.transform.localRotation = Quaternion.Euler(new Vector3(-165f, 90f, leftArmZRotation));
                 rightArm.transform.localRotation = Quaternion.Euler(new Vector3(15f, 90f, rightArmZRotation));
             }
@@ -108,11 +132,17 @@ public class Player : MonoBehaviour
                 transform.rotation = Quaternion.Euler(new Vector3(0f, Quaternion.RotateTowards(lookRotationEnemy, transform.rotation, rotationSpeed * Time.deltaTime).eulerAngles.y));
 
             }
-            if(onFire == false)
+            fireTimer += Time.fixedDeltaTime;
+
+            if (fireTimer >= gameManager.FireRate)
             {
-                StartCoroutine(FireRoutine());
+                fireTimer = 0;
+                GameObject leftBullet = pool.Fire(currentBulletType, leftGun.transform.position, leftGun.transform.rotation);
+                GameObject rightBullet = pool.Fire(currentBulletType, rightGun.transform.position, rightGun.transform.rotation);
+
 
             }
+
         }
         else
         {
@@ -131,31 +161,6 @@ public class Player : MonoBehaviour
         }
 
 
-        //Debug.Log("Kyle Rotation  /  "+ transform.rotation);
-        //Debug.Log("Gun Rotation  /  "+ leftGun.transform.rotation.eulerAngles.y);
-
-        float stepEnemy = rotationSpeed * Time.deltaTime;
-        Vector3 direction = (enemyTemp.transform.position - transform.position).normalized;
-        //Quaternion lookRotationEnemy = Quaternion.LookRotation(direction,Vector3.up);
-        //Debug.Log(Quaternion.RotateTowards(lookRotationEnemy, transform.rotation, stepEnemy).eulerAngles.y);
-        //transform.rotation= Quaternion.RotateTowards(lookRotationEnemy, transform.rotation, stepEnemy);
-        //float stepEnemy = rotationSpeed * Time.deltaTime;
-        //Vector3 direction = (enemyTemp.transform.position - leftArm.transform.position).normalized;
-        //Quaternion lookRotationEnemy = Quaternion.LookRotation(direction);
-        //Debug.Log(lookRotationEnemy.eulerAngles.y);
-        //lookRotationEnemy = Quaternion.Euler(-165f, 90f,Mathf.Clamp(lookRotationEnemy.eulerAngles.y ,-60f,30f) );
-        //Debug.Log(lookRotationEnemy.z);
-
-        //leftArm.transform.localRotation = Quaternion.RotateTowards(lookRotationEnemy, leftArm.transform.localRotation, stepEnemy);
-        //leftArm.transform.localRotation = Quaternion.Euler(new Vector3(-165f, 90f, 30f));
-        //rightArm.transform.localRotation = Quaternion.Euler(new Vector3(15f, 90f, 30f));
-        //transform.rotation = Quaternion.Euler(new Vector3(0f, transform.rotation.y, transform.rotation.z));
-        leftForeArm.transform.localRotation = Quaternion.Euler(new Vector3(0f, 15f, -55f));
-        rightForeArm.transform.localRotation = Quaternion.Euler(new Vector3(110f, -35f, -50f));
-        upperLeftArm.transform.localRotation = Quaternion.Euler(new Vector3(10f, 7f, 50f));
-        upperRightArm.transform.localRotation = Quaternion.Euler(new Vector3(-2f, -7f, 40f));
-        leftWrist.transform.localRotation = Quaternion.Euler(new Vector3(0f, 0f, 55f));
-        rightWrist.transform.localRotation = Quaternion.Euler(new Vector3(-90f, -90f, 85f ));
     }
 
     private bool CheckTargetable(float yTransform,Targetable targetable)
@@ -167,7 +172,6 @@ public class Player : MonoBehaviour
         if (yTransform > 180 && isCloserDegreeExist)
             yTransform = yTransform - 360;
         yOffset = Math.Abs (yTransform - playerYAbs); //How much rotation needed to hit the enemy
-        //Debug.Log(targetable + "  /  " +yTransform+"  /  "+ transform.rotation.eulerAngles.y + "  /  " + yOffset);
         if(targetable == Targetable.LeftTargetable)
         {
             if (yOffset < 65 &&  yTransform<= playerYAbs ) //robot's arm can rotate maximum 65 degrees check if it can hit that object
@@ -205,6 +209,13 @@ public class Player : MonoBehaviour
     
     private float YZRotationMapper(float yTransform)
     {
+        float playerYAbs = transform.rotation.eulerAngles.y; //Get player's current rotation
+        bool isCloserDegreeExist = Mathf.Abs(playerYAbs - yTransform) > 180; //find closest degree between player's current and targeted enemy
+        if (playerYAbs > 180 && isCloserDegreeExist)
+            playerYAbs = playerYAbs - 360;
+        if (yTransform > 180 && isCloserDegreeExist)
+            yTransform = yTransform - 360;
+        yOffset = Math.Abs(yTransform - playerYAbs); //How much rotation needed to hit the enemy
         //We know enemy hittable so calculate the rotation degree of arm
         float yDifference = maxY - yOffset; //Calculate in y axis
         float correspondingZ = yDifference + minZ; //Map to Z axis
@@ -212,16 +223,36 @@ public class Player : MonoBehaviour
         return correspondingZ;
     }
 
-    private IEnumerator FireRoutine()
+
+    IEnumerator ForceShieldTrigger(float fromVal, float toVal, float duration)
     {
-        onFire = true;
-        while (onFire)
+        float counter = 0f;
+        while (counter < duration)
         {
-            yield return new WaitForSeconds(0.1f);
-            GameObject leftBullet = pool.Fire("bullet",leftGun.transform.position, leftGun.transform.rotation);
-            GameObject rightBullet = pool.Fire("bullet", rightGun.transform.position, rightGun.transform.rotation);
-            yield return new WaitForSeconds(1f);
+       
+            counter += Time.unscaledDeltaTime;
+
+
+            float val = Mathf.Lerp(fromVal, toVal, counter / duration);
+            ForceShield.transform.localScale = new Vector3(val, val, val);
+            Debug.Log("Val: " + val);
+            yield return null;
         }
+        ForceShield.transform.localScale = new Vector3(3f, 0.1f, 3f);
+    }
+    private void TriggerShield()
+    {
+        var enemiesInsideShield = Physics.OverlapSphere(ForceShield.transform.position, ForceShield.GetComponent<Renderer>().bounds.extents.magnitude);
+        StartCoroutine(ForceShieldTrigger(ForceShield.transform.localScale.y, ForceShield.transform.localScale.x, 0.3f));
+        foreach(var gameObj in enemiesInsideShield)
+        {
+            
+            if (gameObj.tag == "Enemy")
+            {
+                RemoveEnemy(gameObj.GetComponent<Enemy>());
+            }
+        }
+        
     }
 
 
@@ -232,8 +263,13 @@ public class Player : MonoBehaviour
 
     public void RemoveEnemy(Enemy enemy)
     {
-        enemyList.Remove(enemy);
-        Destroy(enemy.gameObject);
+        if (enemyList.Count > 0)
+        {
+
+            enemyList.Remove(enemy);
+            Destroy(enemy.gameObject);
+        }
+
     }
 
 
