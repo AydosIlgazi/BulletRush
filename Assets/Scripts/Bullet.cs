@@ -5,13 +5,15 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     private Vector3 direction;
-    public PoolType buleltType;
-    public int bulletDamage;
     private float bulletPenetration;
     private bool isPenetrated = false;
+
     BulletPool bulletPool;
     Rigidbody rb;
     GameManager gameManager;
+
+    public PoolType bulletType;
+    public int bulletDamage;
     // Start is called before the first frame update
 
     void Awake()
@@ -28,22 +30,21 @@ public class Bullet : MonoBehaviour
         bulletPenetration = gameManager.BulletPenetration;
     }
 
+    void FixedUpdate()
+    {
+        float speed = gameManager.BulletSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(transform.position + direction * speed);
+        if (transform.position.z > 100)
+        {
+            bulletPool.BackToPool(PoolType.regulerBullet, this.gameObject);
+        }
+    }
+
     void OnEnable()
     {
         direction = transform.rotation * Vector3.forward;
         direction.y = 0f;
         transform.rotation = Quaternion.Euler(90f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        float speed = gameManager.BulletSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(transform.position + direction *speed );
-        if (transform.position.z > 100)
-        {
-            bulletPool.BackToPool(PoolType.regulerBullet, this.gameObject);
-        }
     }
 
     void OnCollisionEnter(Collision collision)

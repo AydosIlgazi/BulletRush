@@ -4,28 +4,28 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    Vector3 direction;
+    GameManager instance;
+
     public float movementSpeed= 0.2f;
     public Vector3 target;
     public Rigidbody rb;
     public GameObject user;
-    Vector3 direction;
     public GameObject gameStatus;
-    GameManager instance;
     public int enemyHealth;
     
-    // Start is called before the first frame update
     void Awake()
     {
         instance = GameManager.Instance;
         movementSpeed = instance.EnemySpeed;
         enemyHealth = instance.EnemyHealth;
     }
+
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         //if player is in enemy attack range, follow player
@@ -42,6 +42,7 @@ public class Enemy : MonoBehaviour
         }
 
     }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Bullet")

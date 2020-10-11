@@ -5,17 +5,16 @@ using UnityEngine;
 public enum PoolType { regulerBullet}
 public class BulletPool : MonoBehaviour
 {
+    private Dictionary<PoolType, Queue<GameObject>> poolDictionary;
+
     [System.Serializable]
     public class Pool{
         public PoolType tag;
         public GameObject prefab;
         public int size;
     }
-
     public static BulletPool instance;
-
     public List<Pool> pools;
-    private Dictionary<PoolType,Queue<GameObject>> poolDictionary;
 
     void Awake()
     {
@@ -33,7 +32,7 @@ public class BulletPool : MonoBehaviour
             for(int i = 0; i < pool.size; i++)
             {
                 GameObject obj = Instantiate(pool.prefab);
-                obj.GetComponent<Bullet>().buleltType = pool.tag;
+                obj.GetComponent<Bullet>().bulletType = pool.tag;
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
             }

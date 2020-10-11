@@ -12,44 +12,36 @@ public class EnemySpawner : MonoBehaviour
     private Vector3 yCoordFixer;
     private float offSet = 0.5f;
     [SerializeField] GameObject Enemy=default;
+    GameManager gameManager;
+
     public SpawnerType spawnerType;
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameManager.Instance;
         offSetHorizontalRight = new Vector3(offSet, 0f, 0f);
         offSetHorizontalLeft = new Vector3(-offSet, 0f, 0f);
         offSetVerticalUp = new Vector3(0f, 0f, offSet);
         offSetVerticalDown = new Vector3(0f, 0f, -offSet);
         yCoordFixer = new Vector3(0f, -5.5f, 0f);
-        for (int i = 0; i < GameManager.Instance.SpawnCountPerWave; i++)
-        {
-            //StartCoroutine(InstantiateEnemies());
-        }
         StartCoroutine(InstantiateEnemies());
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 
     IEnumerator InstantiateEnemies()
     {
 
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < gameManager.SpawnCountPerWave; i++)
         {
             var enemy = Instantiate(Enemy, transform);
-            GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+            gameManager.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
             int k = 1;
             Vector3 topScale = transform.position + yCoordFixer; ;
             Vector3 rightScale = transform.position+yCoordFixer;
             Vector3 leftScale = transform.position+yCoordFixer;
             Vector3 bottomScale = transform.position+yCoordFixer;
-            for (int j = 0; j < GameManager.Instance.EnemyCountPerSpawn; j++)
+            for (int j = 0; j < gameManager.EnemyCountPerSpawn; j++)
             {
-                if (k + 1 > GameManager.Instance.MaximumEnemySpawnedSimultenous)
+                if (k + 1 > gameManager.MaximumEnemySpawnedSimultenous)
                 {
                     k = 1;
                     topScale.z += offSetVerticalUp.z;
@@ -60,34 +52,34 @@ public class EnemySpawner : MonoBehaviour
                 if (spawnerType == SpawnerType.topSpawner)
                 {
                     enemy = Instantiate(Enemy, topScale + (offSetHorizontalRight * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    gameManager.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                     enemy = Instantiate(Enemy, topScale + (offSetHorizontalLeft * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    gameManager.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                 }
                 else if (spawnerType == SpawnerType.rightSpawner)
                 {
                     enemy = Instantiate(Enemy, rightScale + (offSetVerticalUp * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    gameManager.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                     enemy = Instantiate(Enemy, rightScale + (offSetVerticalDown * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    gameManager.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                 }
                 else if (spawnerType == SpawnerType.leftSpawner)
                 {
                     enemy = Instantiate(Enemy, leftScale + (offSetVerticalUp * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    gameManager.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                     enemy = Instantiate(Enemy, leftScale + (offSetVerticalDown * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    gameManager.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                 }
                 else
                 {
                     enemy = Instantiate(Enemy, bottomScale + (offSetVerticalUp * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    gameManager.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                     enemy = Instantiate(Enemy, bottomScale + (offSetVerticalDown * (k)), Quaternion.identity, transform);
-                    GameManager.Instance.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
+                    gameManager.Player.GetComponent<Player>().AddEnemy(enemy.GetComponent<Enemy>());
                 }
                 k++;
             }
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(5f);
         }
     }
 }
