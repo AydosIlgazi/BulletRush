@@ -33,18 +33,15 @@ public class Bullet : MonoBehaviour
     void FixedUpdate()
     {
         float speed = gameManager.BulletSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(transform.position + direction * speed);
-        if (transform.position.z > 100)
-        {
-            bulletPool.BackToPool(PoolType.regulerBullet, this.gameObject);
-        }
+        //rb.MovePosition(transform.position + direction * speed);
+        transform.position =transform.position+ direction * speed;
     }
 
     void OnEnable()
     {
         direction = transform.rotation * Vector3.forward;
         direction.y = 0f;
-        transform.rotation = Quaternion.Euler(90f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+        transform.rotation = Quaternion.Euler(90f, transform.rotation.eulerAngles.y, 0f);
     }
 
     void OnCollisionEnter(Collision collision)

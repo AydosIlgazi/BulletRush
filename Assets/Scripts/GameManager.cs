@@ -48,15 +48,15 @@ public class GameManager : MonoBehaviour
         _instance = this;
         SpawnCountPerWave = 2;
         EnemyHealth = 10;
-        EnemySpeed = 0.5f;
+        EnemySpeed = 1.5f;
         BulletDamage = 5;
-        BulletSpeed = 4f;
-        FireRate = 1f;
+        BulletSpeed = 20f;
+        FireRate = 0.6f;
         GameLevel = 1;
         EnemyCountPerSpawn = 16;
         MaximumEnemySpawnedSimultenous = 9;
-        EnemyAttackRange = 12f;
-        PlayerAttackRange = 10f;
+        EnemyAttackRange = 15f;
+        PlayerAttackRange = 13f;
         currentLevel = 0;
         DontDestroyOnLoad(this.gameObject);
     }
@@ -100,10 +100,11 @@ public class GameManager : MonoBehaviour
 
     public void EndLevel()
     {
-        playerUpgrades.SpendablePoints += 1;
+        playerUpgrades.SpendablePoints += 2;
         playerUpgrades.ShowStartLevel();
         playerUpgrades.ShowRevert();
         playerUpgrades.HideRestart();
+        Player.GetComponent<Player>().forceShield.transform.localScale = new Vector3(3f, 0.1f, 3f);
         StartCoroutine(EndLevelCoroutine(1.5f));
         EnemyHealth += 5;
         EnemyCountPerSpawn += 1;
@@ -111,7 +112,7 @@ public class GameManager : MonoBehaviour
         EnemySpeed += 0.15f;
         if (currentLevel % 5 == 0)
         {
-            playerUpgrades.SpendablePoints += 1;
+            playerUpgrades.SpendablePoints += 3;
             SpawnCountPerWave += 1;
         }
     }
@@ -120,6 +121,7 @@ public class GameManager : MonoBehaviour
     {
         levelPanel.SetActive(false);
         Player.SetActive(true);
+        Player.GetComponent<Player>().forceShield.transform.localScale = new Vector3(3f, 0.1f, 3f);
         SpawnEnemies();
     }
 

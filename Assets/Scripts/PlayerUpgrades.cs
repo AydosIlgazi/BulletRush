@@ -33,7 +33,7 @@ public class PlayerUpgrades : MonoBehaviour
         bulletDamage = 10;
         fireRate = -0.1f;
         bulletPenetration = 5;
-        bulletSpeed = 0.3f;
+        bulletSpeed = 5f;
         sliderIncrease = 0.2f;
     }
 
