@@ -330,7 +330,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemiesLeftText: {fileID: 206469004}
-  speed: 15
+  speed: 12
+  isScaling: 0
   variableJoystick: {fileID: 2093799426}
   rb: {fileID: 129323369}
   rotationSpeed: 10
@@ -5309,7 +5310,7 @@ MonoBehaviour:
   - tag: 0
     prefab: {fileID: 5178970010689711260, guid: 9a0635da5cf9dda4083d4051de7c0174,
       type: 3}
-    size: 1000
+    size: 10000
 --- !u!4 &1451533769
 Transform:
   m_ObjectHideFlags: 0

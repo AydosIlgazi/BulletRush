@@ -23,7 +23,7 @@ public class EnemySpawner : MonoBehaviour
         offSetHorizontalLeft = new Vector3(-offSet, 0f, 0f);
         offSetVerticalUp = new Vector3(0f, 0f, offSet);
         offSetVerticalDown = new Vector3(0f, 0f, -offSet);
-        yCoordFixer = new Vector3(0f, -5.5f, 0f);
+        yCoordFixer = new Vector3(0f, -5f, 0f);
         StartCoroutine(InstantiateEnemies());
     }
 

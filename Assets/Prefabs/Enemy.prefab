@@ -29,8 +29,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 574687170158872551}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -5.5, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.3, z: 0.4}
+  m_LocalPosition: {x: 0, y: -5, z: 0}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -113,7 +113,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 84
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &1917124491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,7 +129,7 @@ MonoBehaviour:
   movementSpeed: 1
   target: {x: 0, y: 0, z: 0}
   rb: {fileID: 0}
-  user: {fileID: 1661595715191558084, guid: 318ece0cb941a144c9f83d1258aff46e, type: 3}
+  player: {fileID: 0}
   gameStatus: {fileID: 1606823560786565300, guid: a47d655aead74104a80dcb7d72ea942d,
     type: 3}
   enemyHealth: 0

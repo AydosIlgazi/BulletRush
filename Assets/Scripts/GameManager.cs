@@ -10,6 +10,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] GameObject EnemySpawner=default;
     [SerializeField] GameObject levelPanel = default;
+    GameObject leftSpawner;
+    GameObject topSpawner;
+    GameObject rightSpawner;
+    GameObject bottomSpawner;
     [SerializeField] public GameObject Player;
     PlayerUpgrades playerUpgrades;
 
@@ -64,20 +68,28 @@ public class GameManager : MonoBehaviour
     private void SpawnEnemies()
     {
         Vector3 spawnerLocation = new Vector3(-20f, 6f, Random.Range(-18f, 18f));//Left Spawner
-        GameObject leftSpawner = Instantiate(EnemySpawner, spawnerLocation, Quaternion.identity);
+        leftSpawner = Instantiate(EnemySpawner, spawnerLocation, Quaternion.identity);
         leftSpawner.GetComponent<EnemySpawner>().spawnerType = SpawnerType.leftSpawner;
 
         spawnerLocation.Set(Random.Range(-18f, 18f), 6f, 20f);//Top Spawner
-        GameObject topSpawner = Instantiate(EnemySpawner, spawnerLocation, Quaternion.identity);
+        topSpawner = Instantiate(EnemySpawner, spawnerLocation, Quaternion.identity);
         topSpawner.GetComponent<EnemySpawner>().spawnerType = SpawnerType.topSpawner;
 
         spawnerLocation.Set(20f, 6f, Random.Range(-18f, 18f)); //Right Spawner
-        GameObject rightSpawner = Instantiate(EnemySpawner, spawnerLocation, Quaternion.identity);
+        rightSpawner = Instantiate(EnemySpawner, spawnerLocation, Quaternion.identity);
         rightSpawner.GetComponent<EnemySpawner>().spawnerType = SpawnerType.rightSpawner;
 
         spawnerLocation.Set(Random.Range(-18f, 18f), 6f, -20f); //Botton spawner
-        GameObject bottomSpawner = Instantiate(EnemySpawner, spawnerLocation, Quaternion.identity);
+        bottomSpawner = Instantiate(EnemySpawner, spawnerLocation, Quaternion.identity);
         bottomSpawner.GetComponent<EnemySpawner>().spawnerType = SpawnerType.bottomSpawner;
+    }
+
+    private void DestroySpawners()
+    {
+        Destroy(leftSpawner);
+        Destroy(rightSpawner);
+        Destroy(topSpawner);
+        Destroy(bottomSpawner);
     }
 
     IEnumerator EndLevelCoroutine(float delay)
@@ -87,6 +99,8 @@ public class GameManager : MonoBehaviour
         Player.transform.position = Vector3.zero;
         Player.GetComponent<Player>().KillAllEnemies();
         Player.SetActive(false);
+        DestroySpawners();
+
 
     }
 
@@ -105,6 +119,7 @@ public class GameManager : MonoBehaviour
         playerUpgrades.ShowRevert();
         playerUpgrades.HideRestart();
         Player.GetComponent<Player>().forceShield.transform.localScale = new Vector3(3f, 0.1f, 3f);
+        Player.GetComponent<Player>().isScaling = false;
         StartCoroutine(EndLevelCoroutine(1.5f));
         EnemyHealth += 5;
         EnemyCountPerSpawn += 1;
@@ -122,6 +137,7 @@ public class GameManager : MonoBehaviour
         levelPanel.SetActive(false);
         Player.SetActive(true);
         Player.GetComponent<Player>().forceShield.transform.localScale = new Vector3(3f, 0.1f, 3f);
+        Player.GetComponent<Player>().isScaling = false;
         SpawnEnemies();
     }
 
@@ -130,7 +146,7 @@ public class GameManager : MonoBehaviour
         playerUpgrades.HideRevert();
         playerUpgrades.HideStartLevel();
         playerUpgrades.ShowRestart();
-        
         StartCoroutine(EndLevelCoroutine(0));
+
     }
 }

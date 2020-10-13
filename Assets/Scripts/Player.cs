@@ -14,7 +14,6 @@ public class Player : MonoBehaviour
     private float yOffset;
     private float fireTimer = 0f;
     private PoolType currentBulletType;
-    private bool isScaling = false;
 
     Animator animator;
     GameManager gameManager;
@@ -22,6 +21,7 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject enemiesLeftText=default;
 
     public float speed;
+    public bool isScaling = false;
     public VariableJoystick variableJoystick;
     public Rigidbody rb;
     public float rotationSpeed;
@@ -62,22 +62,6 @@ public class Player : MonoBehaviour
         {
             TriggerShield();
         }
-    }
-
-    void FixedUpdate()
-    {
-
-
-        //if(direction != Vector3.zero)
-        //{
-        //    Vector3 lookDirection = new Vector3(variableJoystick.Horizontal, 0, variableJoystick.Vertical);
-        //    Quaternion lookRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-
-        //    float step = rotationSpeed * Time.deltaTime;
-        //    transform.rotation = Quaternion.RotateTowards(lookRotation, transform.rotation, step);
-        //}
-        
-
     }
 
     void LateUpdate()
@@ -285,20 +269,13 @@ public class Player : MonoBehaviour
 
         float counter = 0;
 
-        Debug.Log("scaling");
         //Get the current scale of the object to be moved
         Vector3 startScaleSize = forceShield.transform.localScale;
         Vector3 toScale = new Vector3(startScaleSize.x + 0.5f, startScaleSize.y, startScaleSize.z + 0.5f);
         while (counter < duration)
         {
             counter += Time.fixedDeltaTime;
-            Debug.Log(counter);
-            Debug.Log(startScaleSize);
-            Debug.Log(toScale);
-            Debug.Log(counter / duration);
-            Debug.Log(Vector3.Lerp(startScaleSize, toScale, counter / duration));
             forceShield.transform.localScale = Vector3.Lerp(startScaleSize, toScale, counter / duration);
-            Debug.Log(forceShield.transform.localScale);
             yield return null;
         }
         isScaling = false;
@@ -316,7 +293,6 @@ public class Player : MonoBehaviour
         {
             if (Input.GetMouseButton(0) && forceShield.GetComponent<Renderer>().bounds.extents.magnitude<10)
             {
-                Debug.Log(forceShield.GetComponent<Renderer>().bounds.extents.magnitude < 10);
                 StartCoroutine(ForceShieldAreaIncrease(0.5f));
             }
             enemyList.Remove(enemy);
